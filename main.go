@@ -27,9 +27,9 @@ func main() {
 	err := make(chan error)
 	go cat(c, err, quit)
 	for {
+		var x string
 		select {
-		case x := <-c:
-			fmt.Println(x)
+		case x = <-c:
 		case x := <-err:
 			fmt.Fprintln(os.Stderr, "reading standard input:", x)
 		case <-quit:
@@ -39,13 +39,14 @@ func main() {
 	InnerLoop:
 		for {
 			select {
-			case <-c:
+			case x = <-c:
 				timeout = time.After(time.Duration(*timeoutSeconds) * time.Second)
 			case x := <-err:
 				fmt.Fprintln(os.Stderr, "reading standard input:", x)
 			case <-quit:
 				return
 			case <-timeout:
+				fmt.Println(x)
 				break InnerLoop
 			}
 		}
