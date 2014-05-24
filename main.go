@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"os"
 	"time"
@@ -19,6 +20,8 @@ func cat(c chan string, e chan error, quit chan struct{}) {
 }
 
 func main() {
+	var timeoutSeconds = flag.Int("timeout", 1, "amount of time between output")
+	flag.Parse()
 	c := make(chan string)
 	quit := make(chan struct{})
 	err := make(chan error)
@@ -32,12 +35,12 @@ func main() {
 		case <-quit:
 			return
 		}
-		timeout := time.After(2 * time.Second)
+		timeout := time.After(time.Duration(*timeoutSeconds) * time.Second)
 	InnerLoop:
 		for {
 			select {
 			case <-c:
-				timeout = time.After(2 * time.Second)
+				timeout = time.After(time.Duration(*timeoutSeconds) * time.Second)
 			case x := <-err:
 				fmt.Fprintln(os.Stderr, "reading standard input:", x)
 			case <-quit:
