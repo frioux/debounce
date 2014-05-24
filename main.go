@@ -20,7 +20,7 @@ func cat(c chan string, e chan error, quit chan struct{}) {
 }
 
 func main() {
-	var timeoutSeconds = flag.Int("timeout", 1, "amount of time between output")
+	var timeoutSeconds = flag.Float64("timeout", 1, "amount of time between output")
 	var begin = flag.Bool("beginEdge", false, "trigger at start")
 	var end = flag.Bool("endEdge", true, "trigger at end")
 	flag.Parse()
