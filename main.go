@@ -51,9 +51,12 @@ func main() {
 
 	for {
 		var x string
+		shouldPrint := false
 		select {
 		case x = <-c:
+			shouldPrint = true
 			if begin {
+				shouldPrint = false
 				fmt.Println(x)
 			}
 		case x := <-err:
@@ -62,7 +65,6 @@ func main() {
 			return
 		}
 		timeout := time.After(time.Duration(timeoutSeconds) * time.Second)
-		shouldPrint := false
 	InnerLoop:
 		for {
 			select {
