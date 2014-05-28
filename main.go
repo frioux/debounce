@@ -23,9 +23,9 @@ func main() {
 	var timeoutSeconds float64
 	var begin, end, h, help bool
 
-	flag.Float64Var(&timeoutSeconds, "timeout", 1, "amount of time between output")
-	flag.BoolVar(&begin, "beginEdge", false, "trigger at start")
-	flag.BoolVar(&end, "endEdge", true, "trigger at end")
+	flag.Float64Var(&timeoutSeconds, "lockoutTime", 1, "amount of time between output")
+	flag.BoolVar(&begin, "leadingEdge", false, "trigger at leading edge of cycle")
+	flag.BoolVar(&end, "trailingEdge", true, "trigger at trailing edge of cycle")
 	flag.BoolVar(&h, "h", false, "help for debounce")
 	flag.BoolVar(&help, "help", false, "help for debounce")
 
@@ -33,12 +33,28 @@ func main() {
 
 	if h || help {
 		fmt.Println("\n" +
-			" debounce          [--beginEdge] [--endEdge] [--timeout 2] [-h|--help]\n" +
-			"    --beginEdge     pass this flag to output at the start of a cycle\n" +
-			"    --endEdge       pass this flag to output after the end of a cycle\n" +
-			"    --timeout       set the timeout in seconds, default is 1 second\n" +
+			" debounce          [--leadingEdge] [--trailingEdge] [--timeout 2]\n" +
+			"                   [-h|--help]\n" +
 			"\n" +
-			"    -h --help       print usage message and exit\n",
+			"    --leadingEdge   pass this flag to output at the leading edge of a cycle\n" +
+			"                    (off by default)\n" +
+			"    --trailingEdge  pass this flag to output at the trailing edge of a cycle\n" +
+			"                    (on by default, pass false to disable)\n" +
+			"    --lockoutTime   set the lockout time in seconds, default is 1 second\n" +
+			"\n" +
+			"    -h --help       print usage message and exit\n" +
+			"\n" +
+			"\n" +
+			"debounce creates cycles based on the lockout time.  The cycle\n" +
+			"starts on the first line sent and stops after no lines are sent\n" +
+			"within a period of the lockout time\n" +
+			"\n" +
+			"\n" +
+			"The following would run tests after a second of 'silence' after a\n" +
+			"save\n" +
+			"\n" +
+			" inotifywait -mr -e modify,move . | debounce | xargs -n1 make test\n" +
+			"",
 		)
 		return
 	}
