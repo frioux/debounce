@@ -53,7 +53,7 @@ func main() {
 			"The following would run tests after a second of 'silence' after a\n" +
 			"save\n" +
 			"\n" +
-			" inotifywait -mr -e modify,move . | debounce | xargs -n1 make test\n" +
+			" inotifywait -mr -e modify,move . | debounce | xargs -i{} make test\n" +
 			"",
 		)
 		return
